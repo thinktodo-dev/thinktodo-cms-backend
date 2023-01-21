@@ -4,6 +4,7 @@ import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { join } from "path";
 import { DataSource } from "typeorm";
+import { RoleModule } from './modules/role/role.module';
 
 
 @Module({
@@ -11,7 +12,7 @@ import { DataSource } from "typeorm";
     TypeOrmModule.forRoot({
       type: "mysql" as "mysql",
       host: process.env.DB_HOST || "localhost",
-      port: Number(process.env.DB_PORT || 5432).valueOf(),
+      port: Number(process.env.DB_PORT || 3306).valueOf(),
       username: process.env.DB_USERNAME || "admin",
       password: process.env.DB_PASSWORD || "root",
       database: process.env.DB_DATABASE || "cms_thinktodo_db",
@@ -21,7 +22,8 @@ import { DataSource } from "typeorm";
       logging: false,
       timezone: "+00:00",
       //logger: new TaskdinoLoggerTypeOrm(),
-  })
+  }),
+    RoleModule
   ],
   controllers: [AppController],
   providers: [AppService],

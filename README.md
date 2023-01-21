@@ -13,3 +13,10 @@ typeorm init
 
 # How to create migration script 
 npm run typeorm:create src/migration/CreateUserTable
+
+# How to run CMS
+1/ Run database and redis first
+docker-compose up
+
+2/ Run CMS API
+npm run start

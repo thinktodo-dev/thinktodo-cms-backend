@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm"
+import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } from "typeorm"
 import { DB_TABLE } from "../config/db-table";
 
 export class CreateUserTable1674305460033 implements MigrationInterface {
@@ -70,6 +70,12 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
                 default: `'active'`
             },
             {
+                name: 'role_id',
+                type: 'varchar',
+                isNullable: true,
+                length: '36'
+            },
+            {
                 name: "created",
                 type: "timestamp",
                 default: "CURRENT_TIMESTAMP",
@@ -87,7 +93,25 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
         true
         );
 
+        for (const field of this.indexFields) {
+            await queryRunner.createIndex(
+                DB_TABLE.USER_TABLE,
+              new TableIndex({
+                name: `IDX_USER_${field.toUpperCase()}`,
+                columnNames: [field]
+              })
+            );
+        }
 
+        await queryRunner.createForeignKey(
+            DB_TABLE.USER_TABLE,
+            new TableForeignKey({
+              columnNames: ['role_id'],
+              referencedColumnNames: ['uuid'],
+              referencedTableName: DB_TABLE.ROLE_TABLE,
+              onDelete: 'CASCADE'
+            })
+          );
 
     }
 
