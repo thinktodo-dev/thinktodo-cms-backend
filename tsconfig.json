@@ -11,6 +11,8 @@
       "emitDecoratorMetadata": true,
       "experimentalDecorators": true,
       "sourceMap": true,
+      "baseUrl": "./",
+      "incremental": true,
       "resolveJsonModule": true
    }
 }

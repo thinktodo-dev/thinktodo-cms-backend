@@ -2,35 +2,41 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { NAME_API } from '../../utils/api-constants';
 
-@Controller('role')
+@Controller()
 @ApiTags("Role")
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  @Post()
+  @Post('role')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Create role" })
+  @ApiResponse({ status: 200, description: "OK" })
+  @ApiResponse({ status: 404, description: "Not found" }) 
   create(@Body() createRoleDto: CreateRoleDto) {
     return this.roleService.create(createRoleDto);
   }
 
-  @Get()
+  @Get('role')
   findAll() {
-    return this.roleService.findAll();
+    return "hello";
+    //return this.roleService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roleService.findOne(+id);
+  @Get(`role/:uuid`)
+  findOne(@Param('uuid') uuid: string) {
+    return this.roleService.findOne(+uuid);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.roleService.update(+id, updateRoleDto);
+  @Patch(`role/:uuid`)
+  update(@Param('uuid') uuid: string, @Body() updateRoleDto: UpdateRoleDto) {
+    return this.roleService.update(+uuid, updateRoleDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roleService.remove(+id);
+  @Delete('role/:uuid')
+  remove(@Param('uuid') uuid: string) {
+    return this.roleService.remove(+uuid);
   }
 }

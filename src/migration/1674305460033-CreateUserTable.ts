@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } from "typeorm"
-import { DB_TABLE } from "../config/db-table";
+import { DB_TABLE } from "../config/db.table.config";
 
 export class CreateUserTable1674305460033 implements MigrationInterface {
     indexFields = ['name', 'email', 'username','country_code','mobile'];
@@ -26,7 +26,8 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
             {
                 name: 'password',
                 type: 'varchar',
-                isNullable: true
+                isNullable: true,
+                length: '255'
             },
             {
                 name: 'type_account',
@@ -48,11 +49,6 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
                 isNullable: true
             },
             {
-                name: 'address',
-                type: 'varchar',
-                isNullable: true
-            },
-            {
                 name: 'mobile',
                 type: 'varchar',
                 isNullable: true,
@@ -70,11 +66,17 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
                 default: `'active'`
             },
             {
-                name: 'role_id',
+                name: 'role_code',
                 type: 'varchar',
                 isNullable: true,
-                length: '36'
+                length: '50'
             },
+            {
+                name: 'salt',
+                type: 'varchar',
+                isNullable: true,
+                length: '10'
+            },            
             {
                 name: "created",
                 type: "timestamp",
@@ -106,8 +108,8 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
         await queryRunner.createForeignKey(
             DB_TABLE.USER_TABLE,
             new TableForeignKey({
-              columnNames: ['role_id'],
-              referencedColumnNames: ['uuid'],
+              columnNames: ['role_code'],
+              referencedColumnNames: ['code'],
               referencedTableName: DB_TABLE.ROLE_TABLE,
               onDelete: 'CASCADE'
             })
