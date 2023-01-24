@@ -10,7 +10,7 @@ export class CreateRoleTable1674299668433 implements MigrationInterface {
               name: DB_TABLE.ROLE_TABLE,
               columns: [
                 {
-                    name: "uuid",
+                    name: "id",
                     type: "varchar",
                     isPrimary: true,
                     isGenerated: true,
@@ -62,25 +62,25 @@ export class CreateRoleTable1674299668433 implements MigrationInterface {
           await queryRunner.createIndex(
             DB_TABLE.ROLE_TABLE,
             new TableIndex({
-              name: `IDX_ROLE_UUID`,
-              columnNames: ['uuid']
+              name: `IDX_ROLE_ID`,
+              columnNames: ['id']
             })
           );
 
           await queryRunner.query(
-            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (uuid,code,name,description) VALUES('${uuidv1()}','${ROLES.SUPER_ADMIN_ROLE}','Super Admin Role','Highest Level Role')`,
+            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (id,code,name,description) VALUES('${uuidv1()}','${ROLES.SUPER_ADMIN_ROLE}','Super Admin Role','Highest Level Role')`,
           );
           await queryRunner.query(
-            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (uuid,code,name,description) VALUES('${uuidv1()}','${ROLES.ADMIN_ROLE}','Admin Role','Admin Level Role')`,
+            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (id,code,name,description) VALUES('${uuidv1()}','${ROLES.ADMIN_ROLE}','Admin Role','Admin Level Role')`,
           );  
           await queryRunner.query(
-            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (uuid,code,name,description) VALUES('${uuidv1()}','${ROLES.MANAGER_ROLE}','Manager Role','Manager Role')`,
+            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (id,code,name,description) VALUES('${uuidv1()}','${ROLES.MANAGER_ROLE}','Manager Role','Manager Role')`,
           );  
           await queryRunner.query(
-            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (uuid,code,name,description) VALUES('${uuidv1()}','${ROLES.USER_ROLE}','User Role','User Role')`,
+            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (id,code,name,description) VALUES('${uuidv1()}','${ROLES.USER_ROLE}','User Role','User Role')`,
           );   
           await queryRunner.query(
-            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (uuid,code,name,description) VALUES('${uuidv1()}','${ROLES.ANONYMOUS_ROLE}','Anomymous Role','Anomymous Role')`,
+            `INSERT INTO  ${DB_TABLE.ROLE_TABLE}  (id,code,name,description) VALUES('${uuidv1()}','${ROLES.ANONYMOUS_ROLE}','Anomymous Role','Anomymous Role')`,
           );            
 
     }

@@ -4,14 +4,14 @@ import { DB_TABLE } from "../config/db.table.config";
 export class CreateRolePermissionTable1674316621100 implements MigrationInterface {
     foreignKeysArray = [
         {
-          field: 'role_uuid',            
+          field: 'role_id',            
           table: 'role',
-          reference: 'uuid'
+          reference: 'id'
         },
         {
-          field: 'permission_uuid',            
+          field: 'permission_id',            
           table: 'permission',
-          reference: 'uuid'
+          reference: 'id'
         }
       ];
 
@@ -21,13 +21,13 @@ export class CreateRolePermissionTable1674316621100 implements MigrationInterfac
               name: DB_TABLE.ROLE_PERMISSION_TABLE,
               columns: [
                 {
-                  name: 'role_uuid',
+                  name: 'role_id',
                   type: "varchar",
                   generationStrategy: "uuid",
                   isPrimary: true
                 },
                 {
-                    name: 'permission_uuid',
+                    name: 'permission_id',
                     type: "varchar",
                     generationStrategy: "uuid",
                     isPrimary: true

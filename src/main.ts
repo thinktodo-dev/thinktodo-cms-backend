@@ -7,6 +7,7 @@ import { RequestMethod, VersioningType } from "@nestjs/common";
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
 import { NAME_API } from "./utils/api-constants";
+import { AllExceptionFilter } from "./global.exception";
 
 async function bootstrap() {
 
@@ -28,6 +29,8 @@ async function bootstrap() {
     logger: ['error', 'warn','verbose','log','verbose'],
     cors:corsOptionsDelegate
   });
+  //Catch all exception
+  app.useGlobalFilters(new AllExceptionFilter());
   //Version api
   app.enableVersioning({
     type: VersioningType.MEDIA_TYPE,

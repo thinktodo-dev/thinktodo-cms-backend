@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } f
 import { DB_TABLE } from "../config/db.table.config";
 
 export class CreateUserTable1674305460033 implements MigrationInterface {
-    indexFields = ['name', 'email', 'username','country_code','mobile'];
+    indexFields = ['id','name', 'email', 'username','country_code','mobile'];
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
@@ -10,7 +10,7 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
             name: DB_TABLE.USER_TABLE,
             columns: [
             {
-                name: "uuid",
+                name: "id",
                 type: "varchar",
                 isPrimary: true,
                 isGenerated: true,
@@ -75,7 +75,7 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
                 name: 'salt',
                 type: 'varchar',
                 isNullable: true,
-                length: '10'
+                length: '30'
             },            
             {
                 name: "created",

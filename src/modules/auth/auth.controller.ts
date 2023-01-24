@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions, ClassSerializerInterceptor, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions, ClassSerializerInterceptor, UseInterceptors, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -13,8 +13,8 @@ export class AuthController {
 
   @Post('auth/register')
   async register(@Body() registerUserDto: RegisterUserDto) {
-    let UserEntity:UserEntity= await this.authService.register(registerUserDto);
-    return UserEntity;
+      let userEntity:UserEntity= await this.authService.register(registerUserDto);
+      return userEntity;
   }
 
   @Post('user')

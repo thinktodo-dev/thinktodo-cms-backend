@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table } from "typeorm"
+import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm"
 import { DB_TABLE } from "../config/db.table.config";
 
 export class CreatePermissionTable1674316612148 implements MigrationInterface {
@@ -9,7 +9,7 @@ export class CreatePermissionTable1674316612148 implements MigrationInterface {
               name: DB_TABLE.PERMISSION_TABLE,
               columns: [
                 {
-                    name: "uuid",
+                    name: "id",
                     type: "varchar",
                     isPrimary: true,
                     isGenerated: true,
@@ -58,7 +58,15 @@ export class CreatePermissionTable1674316612148 implements MigrationInterface {
               ]
             }),
             true
-          );       
+          );   
+          
+          await queryRunner.createIndex(
+            DB_TABLE.PERMISSION_TABLE,
+            new TableIndex({
+              name: `IDX_PERMISSION_ID`,
+              columnNames: ['id']
+            })
+          );
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

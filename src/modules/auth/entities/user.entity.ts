@@ -1,4 +1,4 @@
-import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Generated, Index, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, Generated, Index, JoinColumn, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
 import { DB_TABLE } from "../../../config/db.table.config";
 import { CRMBaseEntity } from "../../../utils/crm-base.entity";
 import { UserStatus } from "../../../utils/user-status.enum";
@@ -6,14 +6,14 @@ import { RoleEntity } from "../../role/entities/role.entity";
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 
-@Entity()
+@Entity("user")
 export class UserEntity extends CRMBaseEntity {
     @PrimaryColumn({
         type: "varchar",
         nullable: false,
     })
     @Generated("uuid")
-    uuid: string;
+    id: string;
 
     @Index({
         unique: true
@@ -48,12 +48,12 @@ export class UserEntity extends CRMBaseEntity {
     @Column()
     salt: string;
 
-    @OneToOne(() => RoleEntity)
-    @JoinColumn()
+    @OneToOne(() => RoleEntity, (role) => role.code) //Lazy loading name=role_code if column in UserEntity, referencedColumnName = code is column in RoleEntity
+    @JoinColumn({ name: "role_code", referencedColumnName: "code" })
     role: RoleEntity;
 
     @Column()
-    roleId: number;
+    role_code: string;
 
     @Exclude({
         toPlainOnly: true

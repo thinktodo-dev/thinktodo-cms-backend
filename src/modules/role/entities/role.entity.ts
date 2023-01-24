@@ -1,12 +1,27 @@
-import { Column, Entity, Generated, PrimaryColumn } from "typeorm";
+import { Column, Entity, Generated, Index, PrimaryColumn } from "typeorm";
 import { CRMBaseEntity } from "../../../utils/crm-base.entity";
 
-@Entity()
+@Entity("role")
 export class RoleEntity extends CRMBaseEntity {
     @PrimaryColumn({
         type: "varchar",
         nullable: false,
     })
+    @Index({
+        unique: true
+      })
     @Generated("uuid")
-    uuid: string;
+    id: string;
+
+    @Column()
+    @Index({
+        unique: true
+      })
+    code: string;
+
+    @Column()
+    name: string;
+
+    @Column()
+    description: string;
 }

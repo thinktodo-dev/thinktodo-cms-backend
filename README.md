@@ -64,3 +64,7 @@ Example:
 
 # Generate Resource
 
+# Load lazy loading data
+## using relations in query
+userEntity=await this.usersRepository.findOne({where:{id:userEntity.id},relations: ["role"],})
+
