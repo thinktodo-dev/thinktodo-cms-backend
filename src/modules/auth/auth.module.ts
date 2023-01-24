@@ -6,10 +6,11 @@ import { roleProviders, userProviders } from '../../providers/repository.provide
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './passport/local.strategy';
+import { JWT_SECRET } from '../../utils/constants';
 
 @Module({
   imports: [DatabaseModule,PassportModule,JwtModule.register({
-    secret: process.env.JWTSecret || 'secret',
+    secret: JWT_SECRET,
     signOptions: { expiresIn: process.env.JWT_EXPIRED_IN || '60s' },
   }),],
   controllers: [AuthController],

@@ -9,6 +9,7 @@ import { ROLES } from '../../config/roles.config';
 import { UserStatus } from '../../utils/user-status.enum';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { JwtPayloadDto } from './dto/jwt.payload.dto';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +37,8 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersRepository.findOne({where:{username:username}});
     if (user && await user.validatePassword(pass)) {
-      return user;
+      const { password,salt, ...result } = user;
+      return result;
     }
     return null;
   }

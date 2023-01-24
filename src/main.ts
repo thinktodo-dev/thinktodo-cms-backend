@@ -6,7 +6,7 @@ import { allowlistDomains } from "./config/cors.config";
 import { RequestMethod, VersioningType } from "@nestjs/common";
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
-import { NAME_API } from "./utils/api-constants";
+import { NAME_API } from "./utils/constants";
 import { AllExceptionFilter } from "./global.exception";
 
 async function bootstrap() {
