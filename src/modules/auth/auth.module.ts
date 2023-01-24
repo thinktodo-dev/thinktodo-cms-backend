@@ -4,8 +4,8 @@ import { AuthController } from './auth.controller';
 import { DatabaseModule } from '../database/database.module';
 import { roleProviders, userProviders } from '../../providers/repository.provider';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './passport/local.stratery';
 import { JwtModule } from '@nestjs/jwt';
+import { LocalStrategy } from './passport/local.strategy';
 
 @Module({
   imports: [DatabaseModule,PassportModule,JwtModule.register({
