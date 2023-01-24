@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions, ClassSerializerInterceptor, UseInterceptors, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions, ClassSerializerInterceptor, UseInterceptors, BadRequestException, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -6,6 +6,7 @@ import { plainToClass } from 'class-transformer';
 import { UserEntity } from './entities/user.entity';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserLoginDto } from './dto/login-user.dto';
+import { LocalAuthGuard } from './passport/local-auth.guard';
 @ApiTags("Auth")
 @Controller()
 @UseInterceptors(ClassSerializerInterceptor)
@@ -26,9 +27,10 @@ export class AuthController {
   @ApiOperation({ summary: "Login user from client web/mobile" })
   @ApiResponse({ status: 201, description: "OK" ,type:UserEntity})
   @ApiResponse({ status: 404, description: "NOT_FOUND" })
+  @UseGuards(LocalAuthGuard)
   @Post('auth/login')
-  async login(@Body() userLoginDto: UserLoginDto) {
-
+  async login(@Request() req) {
+    return this.authService.login(req.user);
   }
 
   @Post('user')

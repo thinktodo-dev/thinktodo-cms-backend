@@ -28,14 +28,17 @@ In general, the request lifecycle looks like the following:
 
 ## Features CMS THINKTODO BACKEND
 1. Support CORS
-2. Support user table for login with email
+2. Support user table for login with username (email)
 3. Support bcrypt hash password
 4. Support Serialization 
+5. Support Passport for Authentication
+
 
 # Prerequisites
 1. Docker and Docker Compose
 2. NodeJS & NestJS
 3. Database is Mysql
+4. tsconfig.json should be target es6 because it fix Local Passport issue
 
 # Install Dev Tool
 ## Install TypeOrm

@@ -19,5 +19,5 @@ import { mysqlConnectionConfig } from "./config/mysql.config";
   providers: [AppService],
 })
 export class AppModule {
-  constructor(private dataSource: DataSource) {}
+
 }
