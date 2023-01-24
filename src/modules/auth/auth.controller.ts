@@ -4,17 +4,31 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { plainToClass } from 'class-transformer';
 import { UserEntity } from './entities/user.entity';
-
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { UserLoginDto } from './dto/login-user.dto';
+@ApiTags("Auth")
 @Controller()
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-
+  @ApiBody({ type: RegisterUserDto })
+  @ApiOperation({ summary: "Register new user from client web/mobile" })
+  @ApiResponse({ status: 201, description: "OK" ,type:UserEntity})
+  @ApiResponse({ status: 404, description: "NOT_FOUND" })
   @Post('auth/register')
   async register(@Body() registerUserDto: RegisterUserDto) {
       let userEntity:UserEntity= await this.authService.register(registerUserDto);
       return userEntity;
+  }
+
+  @ApiBody({ type: UserLoginDto })
+  @ApiOperation({ summary: "Login user from client web/mobile" })
+  @ApiResponse({ status: 201, description: "OK" ,type:UserEntity})
+  @ApiResponse({ status: 404, description: "NOT_FOUND" })
+  @Post('auth/login')
+  async login(@Body() userLoginDto: UserLoginDto) {
+
   }
 
   @Post('user')

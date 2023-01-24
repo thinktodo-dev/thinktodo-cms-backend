@@ -22,7 +22,7 @@ export class AllExceptionFilter implements ExceptionFilter {
     exception: HttpException | CRMError | Error 
   ): void {
     let responseBody: any = { message: "Something is error" };
-    let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+    let statusCode = HttpStatus.NOT_FOUND;
 
     if (exception instanceof HttpException) {
       responseBody = exception.getResponse();

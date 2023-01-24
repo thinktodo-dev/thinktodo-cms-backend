@@ -48,7 +48,7 @@ async function bootstrap() {
   .setTitle('THINKTODO CMS CORE')
   .setDescription('The CMS API description')
   .setVersion(packageJson.version)
-  .addTag('CMS')
+  .addTag('CMS CORE API')
   .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('apiDocument', app, document);

@@ -12,18 +12,12 @@ import {
   
 
 
-export class RegisterUserDto {
+export class UserLoginDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
     @IsLowercase()
     username: string;
-  
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsEmail()
-    @IsLowercase()
-    email: string;
   
     @ApiProperty()
     @IsNotEmpty()
@@ -42,8 +36,4 @@ export class RegisterUserDto {
     )
     password: string;
   
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    name: string;
 }
