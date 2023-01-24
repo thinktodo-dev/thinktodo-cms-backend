@@ -27,15 +27,15 @@ Server response
 https://i.stack.imgur.com/2lFhd.jpg
 
 ## Features CMS THINKTODO BACKEND
-1/ Support CORS
-2/ Support user table for login with email
-3/ Support bcrypt hash password
-4/ Support Serialization 
+1. Support CORS
+2. Support user table for login with email
+3. Support bcrypt hash password
+4. Support Serialization 
 
 # Prerequisites
-1/ Docker and Docker Compose
-2/ NodeJS & NestJS
-3/ Database is Mysql
+1. Docker and Docker Compose
+2. NodeJS & NestJS
+3. Database is Mysql
 
 # Install Dev Tool
 ## Install TypeOrm
@@ -49,10 +49,10 @@ nest g resource modules/user
 npm run typeorm:create src/migration/CreateUserTable
 
 # How to run CMS
-1/ Run database and redis first
+1. Run database and redis first
 docker-compose up
 
-2/ Run CMS API
+2. Run CMS API
 npm run start
 
 # Rule of API Url
