@@ -1,12 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, SerializeOptions, ClassSerializerInterceptor, UseInterceptors, BadRequestException, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,  ClassSerializerInterceptor, UseInterceptors, UseGuards, Request, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
-import { plainToClass } from 'class-transformer';
 import { UserEntity } from './entities/user.entity';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserLoginDto } from './dto/login-user.dto';
 import { LocalAuthGuard } from './passport/local-auth.guard';
+import { JwtAuthGuard } from './passport/jwt-auth.guard';
+import { PAGE_LIMIT } from '../../utils/constants';
 
 @ApiTags("Auth")
 @Controller()
@@ -39,9 +40,15 @@ export class AuthController {
     return this.authService.create(registerUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get all users" })
+  @UseGuards(JwtAuthGuard)
+  @Get('user')
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = PAGE_LIMIT
+  ) {
+    return this.authService.findAll({page,limit});
   }
 
   @Get(':id')

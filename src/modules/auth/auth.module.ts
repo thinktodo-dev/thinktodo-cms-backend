@@ -6,14 +6,15 @@ import { roleProviders, userProviders } from '../../providers/repository.provide
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './passport/local.strategy';
-import { JWT_SECRET } from '../../utils/constants';
+import { JWT_EXPIRED_IN, JWT_SECRET } from '../../utils/constants';
+import { JwtStrategy } from './passport/jwt.strategy';
 
 @Module({
   imports: [DatabaseModule,PassportModule,JwtModule.register({
     secret: JWT_SECRET,
-    signOptions: { expiresIn: process.env.JWT_EXPIRED_IN || '60s' },
+    signOptions: { expiresIn: JWT_EXPIRED_IN },
   }),],
   controllers: [AuthController],
-  providers: [AuthService,...userProviders,...roleProviders,LocalStrategy]
+  providers: [AuthService,...userProviders,...roleProviders,LocalStrategy,JwtStrategy]
 })
 export class AuthModule {}

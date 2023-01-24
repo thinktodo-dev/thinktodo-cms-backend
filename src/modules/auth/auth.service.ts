@@ -10,6 +10,11 @@ import { UserStatus } from '../../utils/user-status.enum';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayloadDto } from './dto/jwt.payload.dto';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class AuthService {
@@ -44,9 +49,9 @@ export class AuthService {
   }
   
   async login(user: any) {
-    const payload = { username: user.username, id: user.id,name:user.name };
+    const payload = { username: user.username, id: user.id,name:user.name,role:user.role };
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload)
     };
   }
 
@@ -55,8 +60,8 @@ export class AuthService {
     return 'This action adds a new auth';
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async findAll(options: IPaginationOptions):Promise<Pagination<UserEntity>> {
+    return  paginate<UserEntity>(this.usersRepository, options);
   }
 
   findOne(id: number) {

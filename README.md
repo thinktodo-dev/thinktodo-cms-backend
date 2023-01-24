@@ -30,8 +30,11 @@ In general, the request lifecycle looks like the following:
 1. Support CORS
 2. Support user table for login with username (email)
 3. Support bcrypt hash password
-4. Support Serialization 
-5. Support Passport for Authentication
+4. Support Serialization (hiding secret data in entity)
+5. Support Passport for Authentication (JWT, Local)
+6. Support Paging Data
+
+
 
 
 # Prerequisites
