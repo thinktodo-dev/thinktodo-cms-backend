@@ -1,6 +1,6 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, Generated, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-export class CRMBaseEntity {
+export class CRMBaseEntity extends BaseEntity{
 
   @CreateDateColumn({
     type: 'timestamp',

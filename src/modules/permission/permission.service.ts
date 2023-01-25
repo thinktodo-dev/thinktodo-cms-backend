@@ -1,15 +1,28 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { PERMISSION_PEPOSITORY } from 'src/utils/name.repository';
+import { PermissionEntity } from './entities/permission.entity';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PermissionService {
-  create(createPermissionDto: CreatePermissionDto) {
-    return 'This action adds a new permission';
+
+  constructor(
+    @Inject(PERMISSION_PEPOSITORY)
+    private readonly permissionRepository: Repository<PermissionEntity>,
+  ) {}
+
+
+  async create(createPermissionDto: CreatePermissionDto) {
+    let entity = this.permissionRepository.create(createPermissionDto);
+    entity= await this.permissionRepository.save(entity);
+    return entity;
   }
 
-  findAll() {
-    return `This action returns all permission`;
+  async findAll(options: IPaginationOptions):Promise<Pagination<PermissionEntity>> {
+    return  paginate<PermissionEntity>(this.permissionRepository, options);
   }
 
   findOne(id: number) {

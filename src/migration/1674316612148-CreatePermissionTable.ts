@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm"
+import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } from "typeorm"
 import { DB_TABLE } from "../config/db.table.config";
 
 export class CreatePermissionTable1674316612148 implements MigrationInterface {
@@ -14,6 +14,11 @@ export class CreatePermissionTable1674316612148 implements MigrationInterface {
                     isPrimary: true,
                     isGenerated: true,
                     generationStrategy: "uuid"
+                },
+                {
+                  name: 'role_id',
+                  type: "varchar",
+                  generationStrategy: "uuid"
                 },
                 {
                   name: 'module',
@@ -60,6 +65,16 @@ export class CreatePermissionTable1674316612148 implements MigrationInterface {
             true
           );   
           
+          await queryRunner.createForeignKey(
+            DB_TABLE.PERMISSION_TABLE,
+          new TableForeignKey({
+            columnNames: ['role_id'],
+            referencedColumnNames: ['id'],
+            referencedTableName:DB_TABLE.ROLE_TABLE,
+            onDelete: 'CASCADE'
+          })
+        );
+
           await queryRunner.createIndex(
             DB_TABLE.PERMISSION_TABLE,
             new TableIndex({

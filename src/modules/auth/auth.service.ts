@@ -15,9 +15,10 @@ import {
   Pagination,
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
+import { CRMBaseService } from '../../utils/crm-base.service';
 
 @Injectable()
-export class AuthService {
+export class AuthService extends CRMBaseService<UserEntity>{
   constructor(
     @Inject(USER_PEPOSITORY)
     private readonly usersRepository: Repository<UserEntity>,
@@ -26,7 +27,9 @@ export class AuthService {
     private readonly rolesRepository: Repository<RoleEntity>,
 
     private readonly jwtService: JwtService,
-  ) {}
+  ) {
+    super(usersRepository);
+  }
 
   async register(registerUserDto: RegisterUserDto) {
     let userEntity = this.usersRepository.create(registerUserDto);
@@ -49,30 +52,12 @@ export class AuthService {
   }
   
   async login(user: any) {
-    const payload = { username: user.username, id: user.id,name:user.name,role:user.role };
+    console.log(user);
+    const payload = { username: user.username, id: user.id,name:user.name,role_code:user.role_code };
     return {
       access_token: this.jwtService.sign(payload)
     };
   }
 
 
-  async create(registerUserDto: RegisterUserDto) {
-    return 'This action adds a new auth';
-  }
-
-  async findAll(options: IPaginationOptions):Promise<Pagination<UserEntity>> {
-    return  paginate<UserEntity>(this.usersRepository, options);
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
-  }
 }

@@ -15,7 +15,8 @@ export class JwtAuthGuard extends AuthGuard(['jwt']) {
           throw err || new UnauthorizedException();
         }
 
-        if(user.role === ROLES.SUPER_ADMIN_ROLE) {
+        if(user.role_code === ROLES.SUPER_ADMIN_ROLE) {
+            console.log("Your are super admin");
             return user;
         } else {
             //handle permission

@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, DefaultValuePipe, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { NAME_API } from '../../utils/constants';
+import { NAME_API, PAGE_LIMIT } from '../../utils/constants';
+import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
 
 @Controller()
 @ApiTags("Role")
@@ -19,24 +20,30 @@ export class RoleController {
     return this.roleService.create(createRoleDto);
   }
 
+  
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get roles in system" })
+  @UseGuards(JwtAuthGuard)
   @Get('role')
-  findAll() {
-    return "hello";
-    //return this.roleService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = PAGE_LIMIT
+  ) {
+    return this.roleService.findAll({page,limit});
   }
 
-  @Get(`role/:uuid`)
-  findOne(@Param('uuid') uuid: string) {
-    return this.roleService.findOne(+uuid);
+  @Get(`role/:id`)
+  findOne(@Param('id') id: string) {
+    return this.roleService.findOne(+id);
   }
 
-  @Patch(`role/:uuid`)
-  update(@Param('uuid') uuid: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.roleService.update(+uuid, updateRoleDto);
+  @Patch(`role/:id`)
+  update(@Param(':id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
+    return this.roleService.update(+id, updateRoleDto);
   }
 
-  @Delete('role/:uuid')
-  remove(@Param('uuid') uuid: string) {
-    return this.roleService.remove(+uuid);
+  @Delete('role/:id')
+  remove(@Param('id') id: string) {
+    return this.roleService.remove(+id);
   }
 }

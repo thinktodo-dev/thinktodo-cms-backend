@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, DefaultValuePipe, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { PermissionService } from './permission.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { PAGE_LIMIT } from 'src/utils/constants';
+import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
 
 @Controller('permission')
 export class PermissionController {
@@ -12,10 +15,17 @@ export class PermissionController {
     return this.permissionService.create(createPermissionDto);
   }
 
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get permissions list" })
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.permissionService.findAll();
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = PAGE_LIMIT
+  ) {
+    return this.permissionService.findAll({page,limit});
   }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
