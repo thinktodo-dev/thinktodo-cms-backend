@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,  ClassSerializerInterceptor, UseInterceptors, UseGuards, Request, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,  ClassSerializerInterceptor, UseInterceptors, UseGuards, Request, Query, DefaultValuePipe, ParseIntPipe, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -59,6 +59,11 @@ export class AuthController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
     return this.authService.update(+id, updateAuthDto);
+  }
+
+  @Put('user')
+  changePassword(@Request() req,@Body() updateAuthDto: UpdateAuthDto) {
+    return this.authService.changePassword(req.user.id, updateAuthDto.password);
   }
 
   @Delete(':id')

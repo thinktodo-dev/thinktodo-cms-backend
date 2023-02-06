@@ -62,15 +62,22 @@ docker-compose up
 npm run start
 
 # Rule of API Url
-/{name-microservice}/{secure/{module}/{path}
+/{name-microservice}/{module}/{path}
 
 Example:
-/core/v1/user
-/core/v1/user/:uuid
+/core/user
+/core/user/:uuid
+
+# Version API
+Using version in header
 
 # Generate Resource
 
 # Load lazy loading data
 ## using relations in query
 userEntity=await this.usersRepository.findOne({where:{id:userEntity.id},relations: ["role"],})
+
+# DSuper Admin Account
+username: admin
+password: admin
 

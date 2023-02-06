@@ -16,6 +16,8 @@ import {
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
 import { CRMBaseService } from '../../utils/crm-base.service';
+import { use } from 'passport';
+import { EntityId } from 'typeorm/repository/EntityId';
 
 @Injectable()
 export class AuthService extends CRMBaseService<UserEntity>{
@@ -40,6 +42,15 @@ export class AuthService extends CRMBaseService<UserEntity>{
     userEntity=await this.usersRepository.save(userEntity);
     userEntity=await this.usersRepository.findOne({where:{id:userEntity.id},relations: ["role"],})
     return userEntity;           
+  }
+
+  async changePassword(userId:string, newPassword: string):Promise<boolean> {
+    let userEntity=await this.findOne(userId);
+    const salt =  bcrypt.genSaltSync();
+    userEntity.password=newPassword;
+    userEntity.salt=salt;
+    userEntity=await this.usersRepository.save(userEntity);   
+    return true;    
   }
 
   async validateUser(username: string, pass: string): Promise<any> {

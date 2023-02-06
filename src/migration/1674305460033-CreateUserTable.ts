@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableIndex } from "typeorm"
 import { DB_TABLE } from "../config/db.table.config";
+import { v1 as uuidv1 } from 'uuid';
 
 export class CreateUserTable1674305460033 implements MigrationInterface {
     indexFields = ['id','name', 'email', 'username','country_code','mobile'];
@@ -115,9 +116,15 @@ export class CreateUserTable1674305460033 implements MigrationInterface {
             })
           );
 
+          await queryRunner.query(
+            `INSERT INTO  ${DB_TABLE.USER_TABLE} (id,username, password, type_account, email, name, country_code, status, role_code,salt) VALUES ('${uuidv1()}','admin', '$2b$10$Lh3Npo0sZ/R9AHBIy/t5e.0.atj6ujgRtEg8tvXlxveVG8iXvaY1m', 'email', 'support@thinktodo.net', 'Admin', 'vn', 'active', 'super-admin','$2b$10$Lh3Npo0sZ/R9AHBIy/t5e.')`
+          );             
+
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
     }
 
 }
+
+
