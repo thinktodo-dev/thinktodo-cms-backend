@@ -1,4 +1,4 @@
-import { Injectable, Req, Res } from '@nestjs/common';
+import { Inject, Injectable, Req, Res } from '@nestjs/common';
 import * as AWS from "aws-sdk";
 import { AWS_SETTING, DOMAIN_AWS, DOMAIN_CDN_AWS, MAXIMUM_UPLOAD_IMAGES, MAXIMUM_UPLOAD_SIZE, UPLOAD_SIZES } from '../../utils/constants';
 import multerS3Transform = require("multer-s3-transform");
@@ -9,6 +9,9 @@ import * as multer from "multer";
 import { getDataError, getDataSuccess } from '../../utils/json-format';
 import { ERROR_LIMIT_FILE_SIZE, ERROR_UNKNOWN, ERROR_UPLOAD_FILE, ERROR_UPLOAD_FILE_PATH_WAS_WRONG, ERROR_UPLOAD_FILE_TYPE_WAS_WRONG } from '../../utils/crm.error';
 import { changeDomain } from '../../utils/domain';
+import { UPLOAD_AWS_PEPOSITORY } from '../../utils/name.repository';
+import { Repository } from 'typeorm';
+import { UploadAWSEntity } from './entities/upload-aw.entity';
 
 const s3 = new AWS.S3({
   region: AWS_SETTING.regionKey,
@@ -18,7 +21,10 @@ const s3 = new AWS.S3({
 
 @Injectable()
 export class UploadAWSService {
-  constructor(){}
+  constructor(
+    @Inject(UPLOAD_AWS_PEPOSITORY)
+    private readonly uploadAWSRepository: Repository<UploadAWSEntity>,
+  ) {}
 
   imageS3Option = {
     s3: s3,
@@ -112,7 +118,10 @@ export class UploadAWSService {
           transforms.forEach((transform) =>{
             if(transform.location) result[transform.location] = transform.location;
           });
-          return res.json(getDataSuccess(result,"Upload success"))
+          console.log(result);
+          const uploadFile = this.uploadAWSRepository.create(result);
+          await this.uploadAWSRepository.save(uploadFile);
+          return res.json(getDataSuccess(uploadFile,"Upload success"))
         } catch (error) {
           return res.json(getDataError(ERROR_UPLOAD_FILE, error.message, null))
         }

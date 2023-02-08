@@ -1,4 +1,4 @@
-import { DB_TABLE } from "src/config/db.table.config";
+import { DB_TABLE } from "../config/db.table.config";
 import { MigrationInterface, QueryRunner, Table } from "typeorm"
 
 export class CreateUploadFileTable1675823920802 implements MigrationInterface {
@@ -78,7 +78,7 @@ export class CreateUploadFileTable1675823920802 implements MigrationInterface {
                 },
                 {
                     name: "provider",
-                    type: "vatchar(255)",
+                    type: "varchar(255)",
                     isNullable: false,
                 },   
                 {

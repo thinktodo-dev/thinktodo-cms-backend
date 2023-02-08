@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { CRMBaseEntity } from "src/utils/crm-base.entity";
+import { CRMBaseEntity } from "../../../utils/crm-base.entity";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({

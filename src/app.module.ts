@@ -8,7 +8,7 @@ import { RoleModule } from './modules/role/role.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { mysqlConnectionConfig } from "./config/mysql.config";
 import { PermissionModule } from './modules/permission/permission.module';
-import { UploadAwsModule } from './modules/upload-aws/upload-aws.module';
+import { UploadAWSModule } from './modules/upload-aws/upload-aws.module';
 
 
 
@@ -18,7 +18,7 @@ import { UploadAwsModule } from './modules/upload-aws/upload-aws.module';
     RoleModule,
     AuthModule,
     PermissionModule,
-    UploadAwsModule
+    UploadAWSModule
   ],
   controllers: [AppController],
   providers: [AppService],

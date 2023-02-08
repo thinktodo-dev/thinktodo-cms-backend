@@ -8,6 +8,7 @@ import { ERROR_UPLOAD_FILE } from '../../utils/crm.error';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteFilesDto } from './dto/delete-files.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
 export const ApiFile = 
   (fileName = "image"): MethodDecorator =>
   (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
@@ -29,14 +30,13 @@ export const ApiFile =
     })
   }
 @ApiTags("Upload AWS")
-@ApiBearerAuth()
-@Controller('upload-aws')
+@Controller()
 export class UploadAWSController {
   constructor(private readonly uploadAWSService: UploadAWSService) {}
 
-  @Post("/core/upload-aws/image")
+  @Post("/upload-aws/image")
   @ApiConsumes("multipart/form-data")
-  @UseGuards(AuthGuard("jwt"))
+  // @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Upload single image except svg" })
   @ApiFile()
   @ApiResponse({
@@ -56,7 +56,7 @@ export class UploadAWSController {
     }
   }
 
-  @Post("/core/upload-aws/images")
+  @Post("/upload-aws/images")
   @ApiConsumes("multipart/form-data")
   @UseGuards(AuthGuard("jwt"))
   @ApiOperation({
@@ -80,7 +80,7 @@ export class UploadAWSController {
       );
     }
   }
-  @Post("/core/upload-aws/delete-image")
+  @Post("/upload-aws/delete-image")
   @UseGuards(AuthGuard("jwt"))
   async deleteImg(
     @Req() request,
@@ -98,7 +98,7 @@ export class UploadAWSController {
       );
     }
   }
-  @Post("/core/upload-aws/delete-images")
+  @Post("/upload-aws/delete-images")
   @UseGuards(AuthGuard("jwt"))
   async deleteImgs(
     @Req() request,
@@ -116,7 +116,7 @@ export class UploadAWSController {
       );
     }
   }
-  @Post("/core/upload-aws/files")
+  @Post("/upload-aws/files")
   @ApiConsumes("multipart/form-data")
   @UseGuards(AuthGuard("jwt"))
   @ApiBearerAuth()
@@ -141,7 +141,7 @@ export class UploadAWSController {
     }
   }
 
-  @Post("/core/upload-aws/delete-files")
+  @Post("/upload-aws/delete-files")
   @UseGuards(AuthGuard("jwt"))
   async deleteFiles(
     @Req() request,
