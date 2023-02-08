@@ -8,6 +8,7 @@ import { RoleModule } from './modules/role/role.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { mysqlConnectionConfig } from "./config/mysql.config";
 import { PermissionModule } from './modules/permission/permission.module';
+import { UploadAwsModule } from './modules/upload-aws/upload-aws.module';
 
 
 
@@ -16,7 +17,8 @@ import { PermissionModule } from './modules/permission/permission.module';
     TypeOrmModule.forRoot(mysqlConnectionConfig),
     RoleModule,
     AuthModule,
-    PermissionModule
+    PermissionModule,
+    UploadAwsModule
   ],
   controllers: [AppController],
   providers: [AppService],
