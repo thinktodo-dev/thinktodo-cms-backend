@@ -29,7 +29,7 @@ export class AdminUploadAWSController {
   })
   async create(@Req() request, @Res() response) {
     try {
-      request.params.path = PATH_UPLOAD.ADMIN;
+      request.params.path = PATH_UPLOAD.PUBLIC;
       this.uploadAWSService.imageUpload(request, response);
     } catch (error) {
       return getDataError(
@@ -53,7 +53,7 @@ export class AdminUploadAWSController {
   })
   async createMulti(@Req() request, @Body() body, @Res() response) {
     try {
-      request.params.path = PATH_UPLOAD.ADMIN;
+      request.params.path = PATH_UPLOAD.PUBLIC;
       this.uploadAWSService.multiImageUpload(request, response);
     } catch (error) {
       return getDataError(
@@ -115,7 +115,7 @@ export class AdminUploadAWSController {
   })
   async createMultiFiles(@Req() request, @Body() body, @Res() response) {
     try {
-      request.params.path = PATH_UPLOAD.UPLOAD;
+      request.params.path = PATH_UPLOAD.PUBLIC;
       this.uploadAWSService.multiFileUpload(request, response);
     } catch (error) {
       return getDataError(
