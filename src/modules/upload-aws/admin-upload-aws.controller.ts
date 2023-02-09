@@ -1,41 +1,24 @@
-import { Controller, Post, Body, Req, Res, UseGuards } from '@nestjs/common';
-import { UploadAWSService } from './upload-aws.service';
-import { DeleteImageDto } from './dto/delete-image.dto';
-import { DeleteImagesDto } from './dto/delete-images.dto';
-import { MAXIMUM_UPLOAD_IMAGES, MAXIMUM_UPLOAD_SIZE, PATH_UPLOAD } from '../../utils/constants';
-import { getDataError } from '../../utils/json-format';
-import { ERROR_UPLOAD_FILE } from '../../utils/crm.error';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { DeleteFilesDto } from './dto/delete-files.dto';
-import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
-export const ApiFile = 
-  (fileName = "image"): MethodDecorator =>
-  (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-    ApiBody({
-      type: "multipart/form-data",
-      required: true,
-      schema: {
-        type: "object",
-        properties: {
-          path: {
-            type: "string",
-          },
-          [fileName]: {
-            type: "string",
-            format: "binary",
-          },
-        },
-      },
-    })
-  }
+
+import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { PATH_UPLOAD, MAXIMUM_UPLOAD_IMAGES, MAXIMUM_UPLOAD_SIZE } from "src/utils/constants";
+import { ERROR_UPLOAD_FILE } from "src/utils/crm.error";
+import { getDataError } from "src/utils/json-format";
+import { JwtAuthGuard } from "../auth/passport/jwt-auth.guard";
+import { DeleteFilesDto } from "./dto/delete-files.dto";
+import { DeleteImageDto } from "./dto/delete-image.dto";
+import { DeleteImagesDto } from "./dto/delete-images.dto";
+import { ApiFile } from "./upload-aws.controller";
+import { UploadAWSService } from "./upload-aws.service";
+
 @ApiTags("Upload AWS")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller()
-export class UploadAWSController {
-  constructor(private readonly uploadAWSService: UploadAWSService) {}
-
-  @Post("/upload-aws/image")
+export class AdminUploadAWSController {
+    constructor(private readonly uploadAWSService: UploadAWSService) {}
+  @Post("/admin/upload-aws/image")
   @ApiConsumes("multipart/form-data")
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: "Upload single image except svg" })
@@ -44,9 +27,9 @@ export class UploadAWSController {
     status: 200,
     description: '{code: 1, data: {url: "", thumbnail: ""}, message: ""',
   })
-  async create(@Req() request, @Res() response ) {
+  async create(@Req() request, @Res() response) {
     try {
-      request.params.path = PATH_UPLOAD.PUBLIC;
+      request.params.path = PATH_UPLOAD.ADMIN;
       this.uploadAWSService.imageUpload(request, response);
     } catch (error) {
       return getDataError(
@@ -56,8 +39,7 @@ export class UploadAWSController {
       );
     }
   }
-
-  @Post("/upload-aws/images")
+  @Post("/admin/upload-aws/images")
   @ApiConsumes("multipart/form-data")
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
@@ -71,7 +53,7 @@ export class UploadAWSController {
   })
   async createMulti(@Req() request, @Body() body, @Res() response) {
     try {
-      request.params.path = PATH_UPLOAD.PUBLIC;
+      request.params.path = PATH_UPLOAD.ADMIN;
       this.uploadAWSService.multiImageUpload(request, response);
     } catch (error) {
       return getDataError(
@@ -81,7 +63,8 @@ export class UploadAWSController {
       );
     }
   }
-  @Post("/upload-aws/delete-image")
+
+  @Post("/admin/upload-aws/delete-image")
   @UseGuards(JwtAuthGuard)
   async deleteImg(
     @Req() request,
@@ -99,7 +82,7 @@ export class UploadAWSController {
       );
     }
   }
-  @Post("/upload-aws/delete-images")
+  @Post("/admin/upload-aws/delete-images")
   @UseGuards(JwtAuthGuard)
   async deleteImgs(
     @Req() request,
@@ -117,6 +100,7 @@ export class UploadAWSController {
       );
     }
   }
+
   @Post("/upload-aws/files")
   @ApiConsumes("multipart/form-data")
   @UseGuards(JwtAuthGuard)
@@ -131,7 +115,7 @@ export class UploadAWSController {
   })
   async createMultiFiles(@Req() request, @Body() body, @Res() response) {
     try {
-      request.params.path = PATH_UPLOAD.PUBLIC;
+      request.params.path = PATH_UPLOAD.UPLOAD;
       this.uploadAWSService.multiFileUpload(request, response);
     } catch (error) {
       return getDataError(
@@ -142,8 +126,8 @@ export class UploadAWSController {
     }
   }
 
-  @Post("/upload-aws/delete-files")
-  @UseGuards(JwtAuthGuard)
+  @Post("/admin/upload-aws/delete-files")
+  @UseGuards()
   async deleteFiles(
     @Req() request,
     @Body() body: DeleteFilesDto,
@@ -161,4 +145,3 @@ export class UploadAWSController {
     }
   }
 }
-

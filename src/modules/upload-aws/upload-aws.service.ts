@@ -11,7 +11,8 @@ import { ERROR_LIMIT_FILE_SIZE, ERROR_UNKNOWN, ERROR_UPLOAD_FILE, ERROR_UPLOAD_F
 import { changeDomain } from '../../utils/domain';
 import { UPLOAD_AWS_PEPOSITORY } from '../../utils/name.repository';
 import { Repository } from 'typeorm';
-import { UploadAWSEntity } from './entities/upload-aw.entity';
+import { UploadAWSEntity } from './entities/upload-aws.entity';
+import { CRMBaseService } from '../../utils/crm-base.service';
 
 const s3 = new AWS.S3({
   region: AWS_SETTING.regionKey,
@@ -20,41 +21,43 @@ const s3 = new AWS.S3({
 });
 
 @Injectable()
-export class UploadAWSService {
+export class UploadAWSService extends CRMBaseService<UploadAWSEntity>{
   constructor(
     @Inject(UPLOAD_AWS_PEPOSITORY)
     private readonly uploadAWSRepository: Repository<UploadAWSEntity>,
-  ) {}
+  ) {
+    super(uploadAWSRepository);
+  }
 
   imageS3Option = {
     s3: s3,
-    bucket: AWS_SETTING.s3Setting.private_bucket,
+    bucket: AWS_SETTING.s3Setting.public_bucket,
     contentType: multerS3Transform.AUTO_CONTENT_TYPE,
     acl: "public-read",
     shouldTransform: function(request, file, cb){
       cb(
         null,
         StringHelper.isValidTypeUpload(file.mimetype) && 
-        StringHelper.isValidTypeUpload(
+        StringHelper.isValidPathUpload(
           request.params.path || request.body.path
         )
       );
     },
-    transforms: UPLOAD_SIZES.map((uploadSize) =>{
+    transforms: UPLOAD_SIZES.map((uploadSize) => {
       return {
         id: uploadSize.suffix,
         key: function (request, file, cb) {
           const folderUpload = request.params.path || request.body.path;
           const dateUpload = StringHelper.formatDateUpload(new Date());
           cb(
-            null, 
+            null,
             `${folderUpload}/${dateUpload}/${
               uploadSize.suffix
             }_${new Date().getTime()}_${file.originalname}`
           );
         },
         transform: function (request, file, cb) {
-          if(uploadSize.size){
+          if (uploadSize.size)
             cb(
               null,
               sharp().resize(uploadSize.size, uploadSize.size, {
@@ -62,9 +65,7 @@ export class UploadAWSService {
                 withoutEnlargement: true,
               })
             );
-          }else{
-            cb(null,sharp());
-          }
+          else cb(null, sharp());
         },
       };
     }),
@@ -89,7 +90,7 @@ export class UploadAWSService {
     try { 
       multer({
         storage: multerS3Transform(this.imageS3Option),
-      }).single("image")(req, res, async function (error) {
+      }).single("image")(req, res,async  (error) => {
         if(error){
           return res.json(getDataError(ERROR_UPLOAD_FILE, error.message, null));
         }
@@ -106,7 +107,7 @@ export class UploadAWSService {
               "accept image files except svg",
               null
             ));
-          }else if(!StringHelper.isValidTypeUpload(req.params.path || req.body.path)){
+          }else if(!StringHelper.isValidPathUpload(req.params.path || req.body.path)){
             res.json(getDataError(
               ERROR_UPLOAD_FILE_PATH_WAS_WRONG,
               "File path not found",
@@ -116,12 +117,22 @@ export class UploadAWSService {
           const transforms = req.file.transforms || [];
           const result = {};
           transforms.forEach((transform) =>{
-            if(transform.location) result[transform.location] = transform.location;
+            if(transform.location) result[transform.id] = transform.location;
           });
-          console.log(result);
-          const uploadFile = this.uploadAWSRepository.create(result);
-          await this.uploadAWSRepository.save(uploadFile);
-          return res.json(getDataSuccess(uploadFile,"Upload success"))
+          console.log(req.file)
+          
+          const image = req.file.transforms.find(c => c.id === "url")
+          let createUpload  =  {
+            name: req.file.originalname,
+            alternative_text: req.file.originalname,
+            ext:req.file.originalname.substr(req.file.originalname.lastIndexOf(".")+1),
+            size: image.size,
+            mime: req.file.mimetype,
+            url: image.location,
+          }
+          let uploadImage = await this.uploadAWSRepository.create(createUpload);
+          await this.uploadAWSRepository.save(uploadImage);
+          return res.json(getDataSuccess(result,"Upload success"))
         } catch (error) {
           return res.json(getDataError(ERROR_UPLOAD_FILE, error.message, null))
         }
@@ -137,7 +148,7 @@ export class UploadAWSService {
       }).array("images", MAXIMUM_UPLOAD_IMAGES)(
         req,
         res,
-        async function (error) {
+        async  (error) => {
           if(error) {
             return res.json(
               getDataError(error.code || ERROR_UPLOAD_FILE , error.message, null)
@@ -154,7 +165,7 @@ export class UploadAWSService {
               );
             }
             const resultArray = [];
-            req.files.forEach(file => {
+            req.files.forEach(async file => {
               const result = {};
               const transforms = file.transforms || [];
               transforms.forEach(transform => {
@@ -164,6 +175,17 @@ export class UploadAWSService {
               });
               if(transforms.length) resultArray.push(result);
               else resultArray.push({url: file.location});
+              const image = transforms.find(c => c.id === "url")
+              let createUpload  =  {
+                name: file.originalname,
+                alternative_text: file.originalname,
+                ext:file.originalname.substr(file.originalname.lastIndexOf(".")+1),
+                size: image.size,
+                mime:   file.mimetype,
+                url: image.location,
+              }
+              let uploadImage = await this.uploadAWSRepository.create(createUpload);
+              await this.uploadAWSRepository.save(uploadImage);
             });
             return res.json(getDataSuccess(resultArray,"Upload success"));
           } catch(error) {
@@ -184,10 +206,12 @@ export class UploadAWSService {
           Bucket: AWS_SETTING.s3Setting.bucket_name,
           Key: `${AWS_SETTING.s3Setting.public_assets}/${key}`,
         },
-        (err, data) => {
+        async (err, data) => {
           if (err) {
             return res.json(getDataError(ERROR_UNKNOWN, "removeImg Error" + err.message,null));
           } else {
+            const image = await this.uploadAWSRepository.findOne({where:{url:image_url}});
+            await this.uploadAWSRepository.delete(image.id);
             return res.json(getDataSuccess(data, "Removed Success"));
           }
         }
@@ -224,6 +248,10 @@ export class UploadAWSService {
             res.json(getDataError(ERROR_UNKNOWN, "RemoveMultiImg Error: "+ err.message ,null))
             throw err;
           } else {
+            image_url_array.forEach(async image_url => {
+              const image = await this.uploadAWSRepository.findOne({where:{url: image_url}});
+              await this.uploadAWSRepository.delete(image.id);
+            })
             return res
               ? res.json(getDataSuccess(data, "Removed Success"))
               : getDataSuccess(data, "Removed Success");
@@ -247,7 +275,7 @@ export class UploadAWSService {
         );
     }
   }
-  async multiFileUpload(@Req() req, @Res() res) {
+  async multiFileUpload(@Req() req, @Res() res ) {
     try {
       await multer({
         storage: multerS3(this.fileS3Option),
@@ -262,7 +290,7 @@ export class UploadAWSService {
       }).array("files", MAXIMUM_UPLOAD_IMAGES)(
         req,
         res,
-        async function (error) {
+        async (error) => {
           if (error)
             return res.json(
               getDataError(error.code || ERROR_UPLOAD_FILE, error.message, null)
@@ -279,8 +307,19 @@ export class UploadAWSService {
                 )
               );
             const resultArray = [];
-            req.files.forEach((file) => {
+            req.files.forEach(async (file) => {
               resultArray.push({ name: file.originalname, url: file.location });
+              console.log(file)
+              let createUpload  =  {
+                name: file.originalname,
+                alternative_text: file.originalname,
+                ext:file.originalname.substr(file.originalname.lastIndexOf(".")+1),
+                size: file.size,
+                mime: file.mimetype,
+                url: file.location,
+              }
+              let uploadImage = await this.uploadAWSRepository.create(createUpload);
+              await this.uploadAWSRepository.save(uploadImage);
             });
             return res.json(getDataSuccess(resultArray, "Upload Success"));
           } catch (error) {
@@ -318,6 +357,10 @@ export class UploadAWSService {
           if (err) {
             return res.json(getDataError(ERROR_UNKNOWN,"removeMultiFile Error: " + err.message,null));
           } else {
+            file_url_array.forEach(async file_url => {
+              const file = await this.uploadAWSRepository.findOne({where:{url: file_url}});
+              await this.uploadAWSRepository.delete(file.id);
+            })
             return res
               ? res.json(getDataSuccess(data, "Removed Success"))
               : getDataSuccess(data, "Removed Success");

@@ -49,7 +49,7 @@ export class CreateUploadFileTable1675823920802 implements MigrationInterface {
                 {
                     name: "hash",
                     type: "varchar(255)",
-                    isNullable: false,
+                    isNullable: true,
                 },
                 {
                     name: "ext",
@@ -79,7 +79,7 @@ export class CreateUploadFileTable1675823920802 implements MigrationInterface {
                 {
                     name: "provider",
                     type: "varchar(255)",
-                    isNullable: false,
+                    isNullable: true,
                 },   
                 {
                     name: "provider_metadata",
@@ -97,13 +97,13 @@ export class CreateUploadFileTable1675823920802 implements MigrationInterface {
                     isNullable: true,
                 },                                    
                 {
-                  name: "created_at",
+                  name: "created",
                   type: "timestamp",
                   default: "CURRENT_TIMESTAMP",
                   isNullable: true,
                 },
                 {
-                  name: "updated_at",
+                  name: "updated",
                   type: "timestamp",
                   isNullable: true,
                   default: "CURRENT_TIMESTAMP",

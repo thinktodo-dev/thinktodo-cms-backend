@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 import { CRMBaseEntity } from "../../../utils/crm-base.entity";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity({
     name: 'upload_file'
@@ -50,7 +50,6 @@ export class UploadAWSEntity extends CRMBaseEntity{
         type: "varchar",
         nullable: false,
     })
-    @IsNotEmpty()
     hash: string;
 
     @Column({
@@ -90,7 +89,6 @@ export class UploadAWSEntity extends CRMBaseEntity{
         type: "varchar",
         nullable: false,
     })
-    @IsNotEmpty()
     provider: string;
 
     @Column({
@@ -98,12 +96,6 @@ export class UploadAWSEntity extends CRMBaseEntity{
         nullable: true,
     })
     provider_metadata: string;
-
-    @Column({
-        type: "timestamp",
-        nullable: true,
-    })
-    published_at: Date;
 
     @Column({
         type: "int",
