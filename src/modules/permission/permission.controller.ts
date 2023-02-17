@@ -3,7 +3,7 @@ import { PermissionService } from './permission.service';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 import { UpdatePermissionDto } from './dto/update-permission.dto';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
-import { PAGE_LIMIT } from 'src/utils/constants';
+import { PAGE_LIMIT } from '../../utils/constants';
 import { JwtAuthGuard } from '../auth/passport/jwt-auth.guard';
 
 @Controller('permission')
