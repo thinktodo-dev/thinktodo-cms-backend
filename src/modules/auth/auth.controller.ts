@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,  ClassSerializerInterceptor, UseInterceptors, UseGuards, Request, Query, DefaultValuePipe, ParseIntPipe, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,  ClassSerializerInterceptor, UseInterceptors, UseGuards, Request, Query, DefaultValuePipe, ParseIntPipe, Put, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -49,6 +49,14 @@ export class AuthController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = PAGE_LIMIT
   ) {
     return this.authService.findAll({page,limit});
+  }
+
+  
+  @Get('verify-token')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  async verifyToken(@Req() request) {
+    return request.user;
   }
 
   @Get(':id')
