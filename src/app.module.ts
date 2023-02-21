@@ -18,7 +18,7 @@ import { UploadAWSModule } from './modules/upload-aws/upload-aws.module';
     RoleModule,
     AuthModule,
     PermissionModule,
-    UploadAWSModule
+    UploadAWSModule,
   ],
   controllers: [AppController],
   providers: [AppService],

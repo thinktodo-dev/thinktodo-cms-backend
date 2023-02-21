@@ -2,9 +2,9 @@
 import { Body, Controller, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { PATH_UPLOAD, MAXIMUM_UPLOAD_IMAGES, MAXIMUM_UPLOAD_SIZE } from "src/utils/constants";
-import { ERROR_UPLOAD_FILE } from "src/utils/crm.error";
-import { getDataError } from "src/utils/json-format";
+import { PATH_UPLOAD, MAXIMUM_UPLOAD_IMAGES, MAXIMUM_UPLOAD_SIZE } from "../../utils/constants";
+import { ERROR_UPLOAD_FILE } from "../../utils/crm.error";
+import { getDataError } from "../../utils/json-format";
 import { JwtAuthGuard } from "../auth/passport/jwt-auth.guard";
 import { DeleteFilesDto } from "./dto/delete-files.dto";
 import { DeleteImageDto } from "./dto/delete-image.dto";
