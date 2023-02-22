@@ -17,7 +17,7 @@ export class SuperAdminController {
   @ApiOperation({ summary: "Create user" })
   @UseGuards(JwtAuthGuard)
   @Post('super-admin')
-  createAccountAdmin(@Body() createSuperAdminDto: CreateSuperAdminDto) {
+  createAccount(@Body() createSuperAdminDto: CreateSuperAdminDto) {
     return this.authService.createAccountAdmin(createSuperAdminDto);
   }
 
@@ -25,7 +25,7 @@ export class SuperAdminController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get all users" })
   @UseGuards(JwtAuthGuard)
-  findAll(
+  getAllAccount(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = PAGE_LIMIT
   ) {
@@ -36,7 +36,7 @@ export class SuperAdminController {
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get detail" })
   @UseGuards(JwtAuthGuard)
-  findOne(@Param('id') id: string) {
+  getDetailAccount(@Param('id') id: string) {
     return this.authService.getDetailAccountAdmin(id);
   }
 
@@ -44,7 +44,7 @@ export class SuperAdminController {
   @ApiOperation({ summary: "Update user" })
   @UseGuards(JwtAuthGuard)
   @Put('super-admin/:id')
-  update(@Param('id') id: string, @Body() updateSuperAdminDto: UpdateSuperAdminDto) {
+  updateAccount(@Param('id') id: string, @Body() updateSuperAdminDto: UpdateSuperAdminDto) {
     return this.authService.updateAccountAdmin(id, updateSuperAdminDto);
   }
 
@@ -52,7 +52,7 @@ export class SuperAdminController {
   @ApiOperation({ summary: "Delete user" })
   @UseGuards(JwtAuthGuard)
   @Delete('super-admin/:id')
-  remove(@Param('id') id: string) {
+  deleteAccount(@Param('id') id: string) {
     return this.authService.deleteAccountAdmin(id);
   }
 }
