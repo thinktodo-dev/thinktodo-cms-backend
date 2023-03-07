@@ -92,7 +92,6 @@ export class AuthService extends CRMBaseService<UserEntity>{
   async createAccountAdmin(createSuperAdminDto: CreateSuperAdminDto):Promise<any> {
     try {
       let user = await this.usersRepository.create(createSuperAdminDto);
-      user.role_code=ROLES.ADMIN_ROLE;
       user.status=UserStatus.ACTIVE;
       const salt =  bcrypt.genSaltSync();
       user.salt=salt;
@@ -113,7 +112,6 @@ export class AuthService extends CRMBaseService<UserEntity>{
       }else{
         let user = await this.usersRepository.create(updateSuperAdminDto);
         user.id = id;
-        user.role_code=ROLES.ADMIN_ROLE;
         user.status=UserStatus.ACTIVE;
         const salt =  bcrypt.genSaltSync();
         user.salt=salt;
