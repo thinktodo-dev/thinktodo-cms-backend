@@ -18,6 +18,11 @@ import {
 import { CRMBaseService } from '../../utils/crm-base.service';
 import { use } from 'passport';
 import { EntityId } from 'typeorm/repository/EntityId';
+import { CreateSuperAdminDto } from './dto/create-super-admin.dto';
+import { UpdateSuperAdminDto } from './dto/update-super-admin.dto';
+import { getDataError, getDataSuccess } from 'src/utils/json-format';
+import { ERROR_ACCOUNT_NOT_FOUND, ERROR_ACCOUNT_GET, ERROR_UNKNOWN, ERROR_ACCOUNT_CREATED, ERROR_ACCOUNT_UPDATE, ERROR_ACCOUNT_DELETE } from 'src/utils/crm.error';
+import { async } from 'rxjs';
 
 @Injectable()
 export class AuthService extends CRMBaseService<UserEntity>{
@@ -70,5 +75,68 @@ export class AuthService extends CRMBaseService<UserEntity>{
     };
   }
 
+  async getDetailAccountAdmin(id:string): Promise<any> {
+    try {
+      let existUser = await this.usersRepository.findOne({where:{id:id}});
+      if(!existUser){
+        return getDataError(ERROR_UNKNOWN,"User not found",null);
+      }else{
+        return getDataSuccess(existUser,"Get detail success");
+      }
+    } catch (error) {
+      return getDataError(ERROR_ACCOUNT_GET,error.message,null);
+    }
+    
+  }
 
+  async createAccountAdmin(createSuperAdminDto: CreateSuperAdminDto):Promise<any> {
+    try {
+      let user = await this.usersRepository.create(createSuperAdminDto);
+      user.status=UserStatus.ACTIVE;
+      const salt =  bcrypt.genSaltSync();
+      user.salt=salt;
+      user=await this.usersRepository.save(user);
+      user=await this.usersRepository.findOne({where:{id:user.id},relations: ["role"],});
+      await this.usersRepository.save(user);
+      return getDataSuccess(user,"Created success")
+    } catch (error) {
+      return getDataError(ERROR_ACCOUNT_CREATED,error.message,null);
+    }
+  }
+
+  async updateAccountAdmin(id:string, updateSuperAdminDto: UpdateSuperAdminDto):Promise<any> {
+    try {
+      let existUser = await this.usersRepository.findOne({where:{id:id}});
+      if(!existUser){
+        return getDataError(ERROR_ACCOUNT_NOT_FOUND,"User not found",null);
+      }else{
+        let user = await this.usersRepository.create(updateSuperAdminDto);
+        user.id = id;
+        user.status=UserStatus.ACTIVE;
+        const salt =  bcrypt.genSaltSync();
+        user.salt=salt;
+        user=await this.usersRepository.save(user);
+        user=await this.usersRepository.findOne({where:{id:user.id},relations: ["role"],});
+        await this.usersRepository.save(user);
+        return getDataSuccess(user,"Update success")
+      }
+    } catch (error) {
+      return getDataError(ERROR_ACCOUNT_UPDATE,error.message,null);
+    }
+    
+  }
+
+  async deleteAccountAdmin(id:string): Promise<any>{
+    try {
+      let existUser = await this.usersRepository.findOne({where:{id:id}});
+      if(!existUser){
+        return getDataError(ERROR_ACCOUNT_NOT_FOUND,"User not found",null);
+      }else{
+        await this.usersRepository.delete(id);
+        return getDataSuccess(existUser,"Delete success");
+      }
+    } catch (error) {
+      return getDataError(ERROR_ACCOUNT_DELETE,error.message,null);
+    }
+  }
 }
