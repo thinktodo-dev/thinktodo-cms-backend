@@ -8,13 +8,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './passport/local.strategy';
 import { JWT_EXPIRED_IN, JWT_SECRET } from '../../utils/constants';
 import { JwtStrategy } from './passport/jwt.strategy';
+import { SuperAdminController } from './super-admin.controller';
 
 @Module({
   imports: [DatabaseModule,PassportModule,JwtModule.register({
     secret: JWT_SECRET,
     signOptions: { expiresIn: JWT_EXPIRED_IN },
   }),],
-  controllers: [AuthController],
+  controllers: [AuthController,SuperAdminController],
   providers: [AuthService,...userProviders,...roleProviders,LocalStrategy,JwtStrategy]
 })
 export class AuthModule {}
